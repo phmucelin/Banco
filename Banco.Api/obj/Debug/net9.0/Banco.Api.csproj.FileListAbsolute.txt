@@ -15,9 +15,6 @@
 /Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Banco.Api.pdb
 /Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Microsoft.OpenApi.dll
-/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
-/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
-/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Banco.Core.dll
 /Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Banco.Core.pdb
 /Users/pedromucelin/Desktop/Banco/Banco.Api/obj/Debug/net9.0/scopedcss/bundle/Banco.Api.styles.css
@@ -36,3 +33,7 @@
 /Users/pedromucelin/Desktop/Banco/Banco.Api/obj/Debug/net9.0/Banco.Api.pdb
 /Users/pedromucelin/Desktop/Banco/Banco.Api/obj/Debug/net9.0/Banco.Api.genruntimeconfig.cache
 /Users/pedromucelin/Desktop/Banco/Banco.Api/obj/Debug/net9.0/ref/Banco.Api.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Api/obj/Debug/net9.0/Banco.Api.sourcelink.json
+/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll

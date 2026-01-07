@@ -9,3 +9,4 @@
 /Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/refint/Banco.Core.dll
 /Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.pdb
 /Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/ref/Banco.Core.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.sourcelink.json
