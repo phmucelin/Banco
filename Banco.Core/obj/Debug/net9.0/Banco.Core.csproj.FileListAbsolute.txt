@@ -1,0 +1,11 @@
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.AssemblyInfoInputs.cache
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.AssemblyInfo.cs
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.csproj.CoreCompileInputs.cache
+/Users/pedromucelin/Desktop/Banco/Banco.Core/bin/Debug/net9.0/Banco.Core.deps.json
+/Users/pedromucelin/Desktop/Banco/Banco.Core/bin/Debug/net9.0/Banco.Core.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Core/bin/Debug/net9.0/Banco.Core.pdb
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/refint/Banco.Core.dll
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/Banco.Core.pdb
+/Users/pedromucelin/Desktop/Banco/Banco.Core/obj/Debug/net9.0/ref/Banco.Core.dll
