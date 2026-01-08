@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Banco.Services;
 using Banco.Api.Dto;
+using System.Diagnostics.Contracts;
 
 namespace Banco.Api.Controllers
 {
@@ -73,6 +74,79 @@ namespace Banco.Api.Controllers
             {
                 return UnprocessableEntity(e.Message);
             }
+        }
+        [HttpGet("{id:int}/mostrarsaldo")]
+        public IActionResult MostraSaldo(int id)
+        {
+            try
+            {
+                var saldo = _contaService.MostraSaldo(id);
+                var dto = new SaldoDto
+                {
+                    ContaId = id,
+                    Saldo = saldo
+                };
+                return Ok(dto);
+            }
+            catch(ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch(InvalidOperationException e)
+            {
+                return UnprocessableEntity(e.Message);
+            }
+        }
+        [HttpGet("contas")]
+        public IActionResult TodasContas(int id, ListaDeContasDto dto)
+        {
+            try{
+                var contas = _contaService.exibeAll();
+                var dto = contas.Select(c=> new ContaDto
+                {
+                    Titular = c.Titular,
+                    Saldo = c.Saldo
+                });
+            }
+            catch(ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch(InvalidOperationException e)
+            {
+                return UnprocessableEntity(e.Message);
+            }
+
+        }
+        [HttpGet("filtrosaldo")]
+        public IActionResult FiltrarSaldoConta([FromQuery] double min)
+        {
+            try
+            {
+                var contas = _contaService.FiltrarSaldoMinimo(min);
+                return Ok(contas);
+            }
+            catch(ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch(InvalidOperationException e)
+            {
+                return UnprocessableEntity(e.Message);
+            }
+        }
+        [HttpGet("por-titualr")]
+        public IActionResult FindUser([FromQuery] string titular)
+        {
+            if (string.IsNullOrWhiteSpace(titular))
+                return BadRequest("Titular é obrigatório.");
+
+                var conta = _contaService.findUser(titular);
+                if(conta == null)
+                {
+                    return NotFound("Conta nao encontrada.");
+                }
+                return Ok(conta);         
         }
     }
 }
