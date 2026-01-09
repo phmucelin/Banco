@@ -23,57 +23,32 @@ namespace Banco.Api.Controllers
         [HttpPost("{id:int}/deposito")]
         public IActionResult Depositar(int id, [FromBody] DepositoDto dto)
         {
-            try
+            var result = _contaService.Depositar(id, dto.Valor);
+            if (!result.Success)
             {
-                _contaService.Depositar(id, dto.Valor);
-                return Ok();            
+                return UnprocessableEntity(result.Error);
             }
-            catch(ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
+            return NoContent();
         }
         [HttpPost("{id:int}/saque")]
         public IActionResult Saque(int id, [FromBody] SaqueDto dto)
         {
-            try
+            var result = _contaService.Sacar(id, dto.Valor);
+            if (!result.Success)
             {
-                _contaService.Saque(id, dto.Valor);
-                return Ok();
+                return UnprocessableEntity(result.Error);
             }
-            catch(ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
+            return NoContent();
         }
         [HttpPost("{id:int}/transferenciapix")]
         public IActionResult TransferenciaPix(int id, [FromBody] TransferenciaPixDto dto)
         {
-            if (!ModelState.IsValid)
+            var result = _contaService.TransferenciaPix(id, dto.Destino, dto.Valor);
+            if (!result.Success)
             {
-                return BadRequest(ModelState);
+                return UnprocessableEntity(result.Error);
             }
-            try
-            {
-                _contaService.TransacaoPix(id, dto.IdDestino, dto.Valor);
-                return NoContent();
-            }
-            catch(ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
+            return NoContent();
         }
         [HttpGet("{id:int}/mostrarsaldo")]
         public IActionResult MostraSaldo(int id)

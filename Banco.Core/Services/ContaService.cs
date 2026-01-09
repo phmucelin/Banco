@@ -1,5 +1,7 @@
 using Banco.Models;
 using Banco.Enums;
+using Banco.Result;
+using System.IO.Pipelines;
 
 namespace Banco.Services
 {
@@ -21,15 +23,15 @@ namespace Banco.Services
             return conta;
         }
 
-        public void Depositar(int id, double valor)
+        public Result Depositar(int id, double valor)
         {
             if (!_contas.ContainsKey(id))
-                throw new ArgumentException("Conta não encontrada.");
+                return Result.Fail("Conta inexistente.");
 
             var conta = _contas[id];
             
             if (valor <= 0)
-                throw new ArgumentException("O valor deve ser maior que zero.");
+                return Result.Fail("Valor invalido.");
 
             conta.Saldo += valor;
 
@@ -41,20 +43,21 @@ namespace Banco.Services
                 Valor = valor,
                 Data = DateTime.Now
             });
+            return Result.Ok();
         }
 
-        public void Saque(int id, double valor)
+        public Result Saque(int id, double valor)
         {
             if (!_contas.ContainsKey(id))
-                throw new ArgumentException("Conta não encontrada.");
+                return Result.Fail("Conta nao encontrada.");
 
             var conta = _contas[id];
             
             if (valor <= 0)
-                throw new ArgumentException("O valor deve ser maior que zero.");
+                return Result.Fail("Error -> valor deve ser superior e diferente de zero");
 
             if (valor > conta.Saldo)
-                throw new InvalidOperationException("Saldo insuficiente.");
+                return Result.Fail("Saldo insuficiente.");
 
             conta.Saldo -= valor;
 
@@ -66,52 +69,67 @@ namespace Banco.Services
                 Valor = valor,
                 Data = DateTime.Now
             });
+            return Result.Ok();
         }
 
-        public void TransacaoPix(int idOrigem, int idDestino, double valor)
+        public Result TransacaoPix(int idOrigem, int idDestino, double valor)
         {
             if (!_contas.ContainsKey(idOrigem))
-                throw new ArgumentException("Conta de origem não encontrada.");
+                return Result.Fail("Conta de origem nao encontrada.");
             
             if (!_contas.ContainsKey(idDestino))
-                throw new ArgumentException("Conta de destino não encontrada.");
+                return Result.Fail("Conta de destino nao encontrada.");
 
             var origem = _contas[idOrigem];
             var destino = _contas[idDestino];
 
             if (valor <= 0)
-                throw new ArgumentException("O valor deve ser maior que zero.");
+                return Result.Fail("Error -> valor deve ser superior e diferente de zero");
 
             if (origem.Saldo < valor)
-                throw new InvalidOperationException("Saldo insuficiente.");
+                return Result.Fail("Saldo insuficiente.");
 
             origem.Saldo -= valor;
             destino.Saldo += valor;
 
-            var transacao = new Transacao
+            origem.Historico.Add( new Transacao
             {
                 Tipo = TipoTransacao.Pix,
                 Origem = origem.Titular,
                 Destino = destino.Titular,
                 Valor = valor,
                 Data = DateTime.Now
-            };
-
-            origem.Historico.Add(transacao);
-            destino.Historico.Add(transacao);
-        }
-        static double MostrarSaldo(Conta conta)
-        {
-            return conta.Saldo;
-        }
-
-        public List<Conta> exibeAll()
+            });
+            destino.Historico.Add( new Transacao
             {
-                if(!listaDeContas.Any())
+                Tipo = TipoTransacao.Pix,
+                Origem = origem.Titular,
+                Destino = destino.Titular,
+                Valor = valor,
+                Data = DateTime.Now
+            });
+            return Result.Ok();
+        }
+        public Result<double> MostrarSaldo(int id)
+        {
+            if (!_contas.ContainsKey(id))
+            {
+                return Result<double>.Fail("Conta inexistente.");
+            }
+
+            var conta = _contas[id];
+
+            return Result<double>.Ok(conta.Saldo);
+        }
+
+        public Result<List<Conta>> ExibeTodas()
+            {
+                var listaDeContas = Conta.ToList();
+                if(!Conta.Any())
                 {
-                    throw new InvalidOperationException("Nenhuma conta registrada no sistema.");
+                    return Result<List<Conta>>.Fail("Nao existem contas previamente cadastradas no sistema.");
                 }
-                return listaDeContas;
+                return Result<List<Conta>>.Ok(listaDeContas);
             }
         
         public List<Conta> existeNegativados()
