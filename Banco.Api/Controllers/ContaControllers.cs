@@ -43,7 +43,7 @@ namespace Banco.Api.Controllers
         [HttpPost("{id:int}/transferenciapix")]
         public IActionResult TransferenciaPix(int id, [FromBody] TransferenciaPixDto dto)
         {
-            var result = _contaService.TransferenciaPix(id, dto.Destino, dto.Valor);
+            var result = _contaService.TransacaoPix(id, dto.Destino, dto.Valor);
             if (!result.Success)
             {
                 return UnprocessableEntity(result.Error);
@@ -53,75 +53,60 @@ namespace Banco.Api.Controllers
         [HttpGet("{id:int}/mostrarsaldo")]
         public IActionResult MostraSaldo(int id)
         {
-            try
+            var result = _contaService.MostrarSaldo(id);
+
+            if (!result.Success)
             {
-                var saldo = _contaService.MostraSaldo(id);
-                var dto = new SaldoDto
-                {
-                    ContaId = id,
-                    Saldo = saldo
-                };
-                return Ok(dto);
+                return NotFound(result.Error);
             }
-            catch(ArgumentException e)
+
+            var dto = new SaldoDto
             {
-                return NotFound(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
+                ContaId = id,
+                Saldo = result.Value
+            };
+
+            return Ok(dto);
         }
+
         [HttpGet("contas")]
         public IActionResult TodasContas(int id, ListaDeContasDto dto)
         {
-            try{
-                var contas = _contaService.exibeAll();
-                var dto = contas.Select(c=> new ContaDto
-                {
-                    Titular = c.Titular,
-                    Saldo = c.Saldo
-                });
-            }
-            catch(ArgumentException e)
+            var result = _contaService.exibeAll();
+            var dto = result.Value.Select(c=> new ContaDto
             {
-                return NotFound(e.Message);
-            }
-            catch(InvalidOperationException e)
+                Titular = c.Titular,
+                Saldo = c.Saldo
+            });
+            if (!result.Success)
             {
-                return UnprocessableEntity(e.Message);
+                return UnprocessableEntity(result.Error);
             }
-
+            return Ok(dto);
         }
         [HttpGet("filtrosaldo")]
         public IActionResult FiltrarSaldoConta([FromQuery] double min)
         {
-            try
+
+            var result = _contaService.FiltrarSaldoMinimo(min);
+            if (!result.Success)
             {
-                var contas = _contaService.FiltrarSaldoMinimo(min);
-                return Ok(contas);
+                return UnprocessableEntity(result.Error);
             }
-            catch(ArgumentException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
+            return Ok(result.Data);
         }
-        [HttpGet("por-titualr")]
+        [HttpGet("por-titular")]
         public IActionResult FindUser([FromQuery] string titular)
         {
             if (string.IsNullOrWhiteSpace(titular))
                 return BadRequest("Titular é obrigatório.");
 
-                var conta = _contaService.findUser(titular);
-                if(conta == null)
-                {
-                    return NotFound("Conta nao encontrada.");
-                }
-                return Ok(conta);         
+                var result = _contaService.findUser(titular);
+            if (!result.Success)
+            {
+                return UnproccessableEntity(result.Error);
+            }
+                return Ok(result.Data);         
         }
     }
 }
