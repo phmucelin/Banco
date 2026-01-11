@@ -132,69 +132,70 @@ namespace Banco.Services
                 return Result<List<Conta>>.Ok(listaDeContas);
             }
         
-        public List<Conta> existeNegativados()
+        public Result<List<Conta>> existeNegativados()
             {
                 var check = listaDeContas.Where(t => t.Saldo < 0).ToList();
-                if (!listaDeContas.Any(t=> t.Saldo < 0))
+                if (!check.Any())
                 {
-                    throw new InvalidOperationException("Nao encontramos nenhuma conta com saldo negativo.");
+                    return Result<List<Conta>>.Fail("Nenhuma conta com saldo negativado.");
                 }
-                return check;
+                return Result<List<Conta>>.Ok(check);
             }
 
-        public List<Conta> FiltroSaldoConta(double vmin)
+        public Result<List<Conta>> FiltroSaldoConta(double vmin)
             {
                 if (vmin < 0)
                 {
-                    throw new ArgumentException("Valor minimo invalido.");
+                    return Result<List<Conta>>.Fail("Valor minimo invalido");
                 }
                 var contas = listaDeContas.Where(t=> t.Saldo > vmin).ToList();
                 if (!contas.Any())
                 {
-                    throw new InvalidOperationException("Nenhuma conta foi encontrada.");
+                    return Result<List<Conta>>.Fail("Nenhuma conta encontrada.");
                 }
-                return contas;
+                return Result<List<Conta>>.Ok(contas);
             }
 
-        public Conta findUser(string Titular)
+        public Result<Conta> findUser(string titular)
             {
-                var finding = listaDeContas.FirstOrDefault(t => t.Titular == Titular);
+                var finding = listaDeContas.FirstOrDefault(t => t.Titular == titular);
                 if(finding == null)
                 {
-                    throw new ArgumentException("O nome foi invalido.");
+                    return Result<Conta>.Fail("Conta nao encontrada");
                 }
-                return finding;
+                return Result<Conta>.Ok(finding);
             }
 
-        public double SomaTotal()
+        public Result<double> SomaTotal()
             {
                 double somaTotal = 0;
+                if(!listaDeContas.Any()) return Result<double>.Fail("Nenhuma conta cadastrada");
                 foreach(var conta in listaDeContas)
                 {
                     somaTotal += conta.Saldo;
                 }
-                return somaTotal;
+                return Result<double>.Ok(somaTotal);
             }
-        public List<Transacao> filtraHistoricoGeral(Conta conta)
+        public Result<List<Transacao>> filtraHistoricoGeral(Conta conta)
             {
                 if (!conta.Historico.Any())
                 {
-                    throw new InvalidOperationException("Nenhum historico na conta");
+                    return Result<List<Transacao>>.Fail("Nenhum historico nesta conta.");
                 }   
-                return conta.Historico;
+                return Result<List<Transacao>>.Ok(conta.Historico);
             }
-        public List<Conta> FiltraHistoricoTipo(Conta conta, Enum TipoTransacao)
+        public Result<List<Conta>> FiltraHistoricoTipo(Conta conta, Enum TipoTransacao)
             {
                 if (!conta.Historico.Any())
                 {
-                    throw new ArgumentException("Nenhum historico presente na conta.");
+                    return Result<List<Conta>>.Fail("Nenhum historico nessa conta.");
                 }
                 if(!conta.Historico.Where(t=> t.Tipo == TipoTransacao))
                 {
-                    throw new InvalidOperationException("Nenhuma transacao encontrada com este tipo.");
+                    return Result<List<Conta>>.Fail("Nenhum historico deste tipo na conta.");
                 }
                 var buscando = conta.Historico.Where(t=> t.Tipo == TipoTransacao);
-                return buscando;
+                return Result<List<Conta>>.Ok(buscando);
             }
     }
 }
