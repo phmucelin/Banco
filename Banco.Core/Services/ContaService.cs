@@ -1,7 +1,6 @@
+using Banco.Core;
 using Banco.Models;
 using Banco.Enums;
-using Banco.Result;
-using System.IO.Pipelines;
 
 namespace Banco.Services
 {
@@ -124,8 +123,8 @@ namespace Banco.Services
 
         public Result<List<Conta>> ExibeTodas()
             {
-                var listaDeContas = Conta.ToList();
-                if(!Conta.Any())
+                var listaDeContas = _contas.Values.ToList();
+                if(!listaDeContas.Any())
                 {
                     return Result<List<Conta>>.Fail("Nao existem contas previamente cadastradas no sistema.");
                 }
@@ -134,6 +133,7 @@ namespace Banco.Services
         
         public Result<List<Conta>> existeNegativados()
             {
+                var listaDeContas = _contas.Values.ToList();
                 var check = listaDeContas.Where(t => t.Saldo < 0).ToList();
                 if (!check.Any())
                 {
@@ -148,6 +148,7 @@ namespace Banco.Services
                 {
                     return Result<List<Conta>>.Fail("Valor minimo invalido");
                 }
+                var listaDeContas = _contas.Values.ToList();
                 var contas = listaDeContas.Where(t=> t.Saldo > vmin).ToList();
                 if (!contas.Any())
                 {
@@ -158,6 +159,7 @@ namespace Banco.Services
 
         public Result<Conta> findUser(string titular)
             {
+                var listaDeContas = _contas.Values.ToList();
                 var finding = listaDeContas.FirstOrDefault(t => t.Titular == titular);
                 if(finding == null)
                 {
@@ -168,6 +170,7 @@ namespace Banco.Services
 
         public Result<double> SomaTotal()
             {
+                var listaDeContas = _contas.Values.ToList();
                 double somaTotal = 0;
                 if(!listaDeContas.Any()) return Result<double>.Fail("Nenhuma conta cadastrada");
                 foreach(var conta in listaDeContas)
@@ -184,18 +187,18 @@ namespace Banco.Services
                 }   
                 return Result<List<Transacao>>.Ok(conta.Historico);
             }
-        public Result<List<Conta>> FiltraHistoricoTipo(Conta conta, Enum TipoTransacao)
+        public Result<List<Transacao>> FiltraHistoricoTipo(Conta conta, TipoTransacao tipo)
             {
                 if (!conta.Historico.Any())
                 {
-                    return Result<List<Conta>>.Fail("Nenhum historico nessa conta.");
+                    return Result<List<Transacao>>.Fail("Nenhum historico nessa conta.");
                 }
-                if(!conta.Historico.Where(t=> t.Tipo == TipoTransacao))
+                var buscando = conta.Historico.Where(t=> t.Tipo == tipo).ToList();
+                if(!buscando.Any())
                 {
-                    return Result<List<Conta>>.Fail("Nenhum historico deste tipo na conta.");
+                    return Result<List<Transacao>>.Fail("Nenhum historico deste tipo na conta.");
                 }
-                var buscando = conta.Historico.Where(t=> t.Tipo == TipoTransacao);
-                return Result<List<Conta>>.Ok(buscando);
+                return Result<List<Transacao>>.Ok(buscando);
             }
     }
 }

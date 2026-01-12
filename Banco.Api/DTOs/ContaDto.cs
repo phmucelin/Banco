@@ -1,4 +1,4 @@
-namespace Banco.Api.Dtos
+namespace Banco.Api.Dto
 {
     public class ContaDto
     {

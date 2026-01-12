@@ -33,7 +33,7 @@ namespace Banco.Api.Controllers
         [HttpPost("{id:int}/saque")]
         public IActionResult Saque(int id, [FromBody] SaqueDto dto)
         {
-            var result = _contaService.Sacar(id, dto.Valor);
+            var result = _contaService.Saque(id, dto.Valor);
             if (!result.Success)
             {
                 return UnprocessableEntity(result.Error);
@@ -43,7 +43,7 @@ namespace Banco.Api.Controllers
         [HttpPost("{id:int}/transferenciapix")]
         public IActionResult TransferenciaPix(int id, [FromBody] TransferenciaPixDto dto)
         {
-            var result = _contaService.TransacaoPix(id, dto.Destino, dto.Valor);
+            var result = _contaService.TransacaoPix(id, dto.IdDestino, dto.Valor);
             if (!result.Success)
             {
                 return UnprocessableEntity(result.Error);
@@ -70,30 +70,29 @@ namespace Banco.Api.Controllers
         }
 
         [HttpGet("contas")]
-        public IActionResult TodasContas(int id, ListaDeContasDto dto)
+        public IActionResult TodasContas()
         {
-            var result = _contaService.exibeAll();
-            var dto = result.Value.Select(c=> new ContaDto
-            {
-                Titular = c.Titular,
-                Saldo = c.Saldo
-            });
+            var result = _contaService.ExibeTodas();
             if (!result.Success)
             {
                 return UnprocessableEntity(result.Error);
             }
+            var dto = result.Value!.Select(c=> new ContaDto
+            {
+                Titular = c.Titular,
+                Saldo = c.Saldo
+            });
             return Ok(dto);
         }
         [HttpGet("filtrosaldo")]
         public IActionResult FiltrarSaldoConta([FromQuery] double min)
         {
-
-            var result = _contaService.FiltrarSaldoMinimo(min);
+            var result = _contaService.FiltroSaldoConta(min);
             if (!result.Success)
             {
                 return UnprocessableEntity(result.Error);
             }
-            return Ok(result.Data);
+            return Ok(result.Value);
         }
         [HttpGet("por-titular")]
         public IActionResult FindUser([FromQuery] string titular)
@@ -101,12 +100,12 @@ namespace Banco.Api.Controllers
             if (string.IsNullOrWhiteSpace(titular))
                 return BadRequest("Titular é obrigatório.");
 
-                var result = _contaService.findUser(titular);
+            var result = _contaService.findUser(titular);
             if (!result.Success)
             {
-                return UnproccessableEntity(result.Error);
+                return UnprocessableEntity(result.Error);
             }
-                return Ok(result.Data);         
+            return Ok(result.Value);         
         }
     }
 }
